@@ -7,6 +7,7 @@ const config = {
     './components/**/*.{ts,tsx}',
     './app/**/*.{ts,tsx}',
     './src/**/*.{ts,tsx}',
+    './*.{ts,tsx}'
 	],
   prefix: "",
   theme: {
@@ -75,6 +76,7 @@ const config = {
     },
   },
   plugins: [require("tailwindcss-animate")],
+  include: ["middleware.ts"]
 } satisfies Config
 
 export default config
