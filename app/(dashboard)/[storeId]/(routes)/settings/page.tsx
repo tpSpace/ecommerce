@@ -1,6 +1,7 @@
 import prismadb from "@/lib/prismadb";
 import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { SettingsForm } from "./components/settings-form";
 
 interface SettingsPageProps {
     params: {
@@ -15,20 +16,22 @@ const SettingsPage: React.FC<SettingsPageProps> = async ({ params }) => {
         redirect("/sign-in");
     }
 
-    const store = await prismadb.store.findFirst({
+    const stores = await prismadb.store.findFirst({
         where: {
             id: params.storeId,
             userId
         }
     });
 
-    if (!store) {
+    if (!stores) {
         redirect("/");
     }
 
     return (
-        <div>
-            Setting Page
+        <div className="flex-col">
+            <div className="flex-1 space-y-4 p-8 pt-6">
+                <SettingsForm initialData={stores}/>
+            </div>
         </div>
     )
 }
