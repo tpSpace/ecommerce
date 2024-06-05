@@ -4,9 +4,10 @@ import React, { use } from "react";
 import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react";
+
 import { Separator } from "@radix-ui/react-separator";
-import { useRouter } from "next/router";
-import { useParams } from "next/navigation";
+
+import { useParams, useRouter } from "next/navigation";
 
 export const BillboardClient = () => {
   const router = useRouter();
