@@ -2,16 +2,16 @@
 
 import * as z from "zod";
 import axios from "axios";
-import { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { toast } from "react-hot-toast";
-import { Trash } from "lucide-react";
 import { Billboard, Category } from "@prisma/client";
-import { useParams, useRouter } from "next/navigation";
+import { Trash } from "lucide-react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useState } from "react";
+import { toast } from "react-hot-toast";
 
-import { Input } from "@/components/ui/input";
+import { Heading } from "@/components/ui/heading";
 import { Button } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
 import {
   Form,
   FormControl,
@@ -20,28 +20,28 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { Separator } from "@/components/ui/separator";
-import { Heading } from "@/components/ui/heading";
+import { Input } from "@/components/ui/input";
+import { useParams, useRouter } from "next/navigation";
 import { AlertModal } from "@/components/modals/alert-modal";
 import {
   Select,
   SelectContent,
   SelectItem,
-  SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const formSchema = z.object({
-  name: z.string().min(2),
-  billboardId: z.string().min(1),
-});
-
-type CategoryFormValues = z.infer<typeof formSchema>;
+import { SelectTrigger } from "@radix-ui/react-select";
 
 interface CategoryFormProps {
   initialData: Category | null;
   billboards: Billboard[];
 }
+
+const formSchema = z.object({
+  name: z.string().min(1),
+  billboardId: z.string().url(),
+});
+
+type CategoryFormValues = z.infer<typeof formSchema>;
 
 export const CategoryForm: React.FC<CategoryFormProps> = ({
   initialData,
@@ -53,10 +53,10 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit category" : "Create category";
-  const description = initialData ? "Edit a category." : "Add a new category";
+  const title = initialData ? "Edit Category" : "Create Category";
+  const description = initialData ? "Edit a Category" : "Create a new Category";
   const toastMessage = initialData ? "Category updated." : "Category created.";
-  const action = initialData ? "Save changes" : "Create";
+  const action = initialData ? "Save Changes" : "Create Category";
 
   const form = useForm<CategoryFormValues>({
     resolver: zodResolver(formSchema),
@@ -71,16 +71,16 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
       setLoading(true);
       if (initialData) {
         await axios.patch(
-          `/api/${params.storeId}/categories/${params.categoryId}`,
+          `/api/${params.storeId}/billboards/${params.billboardId}`,
           data
         );
       } else {
-        await axios.post(`/api/${params.storeId}/categories`, data);
+        await axios.post(`/api/${params.storeId}/billboards`, data);
       }
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
+      router.push(`/${params.storeId}/billboards`);
       toast.success(toastMessage);
-    } catch (error: any) {
+    } catch (error) {
       toast.error("Something went wrong.");
     } finally {
       setLoading(false);
@@ -91,15 +91,13 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
     try {
       setLoading(true);
       await axios.delete(
-        `/api/${params.storeId}/categories/${params.categoryId}`
+        `/api/${params.storeId}/billboards/${params.billboardId}`
       );
       router.refresh();
-      router.push(`/${params.storeId}/categories`);
-      toast.success("Category deleted.");
-    } catch (error: any) {
-      toast.error(
-        "Make sure you removed all products using this category first."
-      );
+      router.push(`/${params.storeId}/billboards`);
+      toast.success("Billboard deleted");
+    } catch (error) {
+      toast.error("Make sure you removed all categories from this billboard.");
     } finally {
       setLoading(false);
       setOpen(false);
@@ -120,8 +118,10 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           <Button
             disabled={loading}
             variant="destructive"
-            size="sm"
-            onClick={() => setOpen(true)}
+            size="icon"
+            onClick={() => {
+              setOpen(true);
+            }}
           >
             <Trash className="h-4 w-4" />
           </Button>
@@ -133,7 +133,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           onSubmit={form.handleSubmit(onSubmit)}
           className="space-y-8 w-full"
         >
-          <div className="md:grid md:grid-cols-3 gap-8">
+          <div className="grid grid-cols-3 gap-8">
             <FormField
               control={form.control}
               name="name"
@@ -172,7 +172,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      {billboards.map((billboard) => (
+                      {billboards.map((billboard: Billboard) => (
                         <SelectItem key={billboard.id} value={billboard.id}>
                           {billboard.label}
                         </SelectItem>
@@ -189,6 +189,7 @@ export const CategoryForm: React.FC<CategoryFormProps> = ({
           </Button>
         </form>
       </Form>
+      <Separator />
     </>
   );
 };
