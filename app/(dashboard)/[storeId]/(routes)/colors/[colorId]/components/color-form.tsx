@@ -31,7 +31,9 @@ interface ColorFormProps {
 
 const formSchema = z.object({
   name: z.string().min(1),
-  value: z.string().min(1),
+  value: z.string().min(4).regex(/^#/, {
+    message: "String must be a valid hex color.",
+  }),
 });
 
 type ColorFormValues = z.infer<typeof formSchema>;
@@ -43,10 +45,10 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const title = initialData ? "Edit Size" : "Create Size";
-  const description = initialData ? "Edit a Size" : "Create a new Size";
-  const toastMessage = initialData ? "Size updated." : "Size created.";
-  const action = initialData ? "Save Changes" : "Create Size";
+  const title = initialData ? "Edit Color" : "Create Color";
+  const description = initialData ? "Edit a Color" : "Create a new Color";
+  const toastMessage = initialData ? "Color updated." : "Color created.";
+  const action = initialData ? "Save Changes" : "Create Color";
 
   const form = useForm<ColorFormValues>({
     resolver: zodResolver(formSchema),
