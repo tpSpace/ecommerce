@@ -1,5 +1,4 @@
 import { auth } from "@clerk/nextjs/server";
-import { UserButton } from "@clerk/nextjs";
 import { redirect } from "next/navigation";
 
 import { MainNav } from "@/components/main-nav";
@@ -27,7 +26,7 @@ const Navbar = async () => {
         <MainNav className="mx-6" />
         <div className="ml-auto flex items-center space-x-4">
           <ThemeToggle />
-          <UserButton afterSignOutUrl="/" />
+          {/* <UserButton afterSignOutUrl="/" /> */}
         </div>
       </div>
     </div>
