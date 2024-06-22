@@ -1,29 +1,23 @@
-# Use the official Node.js image with a specific version
-FROM node:20
+# Use the official Node.js image as the base image
+FROM node:18-alpine
 
 # Set the working directory inside the container
 WORKDIR /app
 
-# npm comes with Node.js, so no need to install npm separately
-# Update npm to the latest version
-RUN npm install -g npm@latest
-# Install Yarn
-RUN npm install --global yarn
-
-# Copy the package.json and yarn.lock files
+# Copy the package.json and yarn.lock files to the container
 COPY package.json yarn.lock ./
 
-# Install dependencies
-RUN yarn install --frozen-lockfile
+# Install the dependencies using yarn
+RUN yarn install
 
-# Copy the rest of your frontend application
+# Copy the rest of the application code to the container
 COPY . .
 
-# Build your Next.js application
+# Build the Next.js project
 RUN yarn build
 
-# Expose the port the app runs on
+# Expose the port that the application will run on
 EXPOSE 3000
 
-# Specify the command to run your app
+# Start the Next.js application
 CMD ["yarn", "start"]
