@@ -25,7 +25,7 @@ jobs:
         uses: actions/checkout@master
 
       - name: Create .env file on droplet
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.7.6
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: root
@@ -48,7 +48,7 @@ jobs:
             echo "STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}" >> .env
 
       - name: Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v1.7.6
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: root
