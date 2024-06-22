@@ -1,36 +1,31 @@
-import { auth } from "@clerk/nextjs/server";
-import { redirect } from "next/navigation";
+"use client";
 
-import { MainNav } from "@/components/main-nav";
-import StoreSwitcher from "@/components/store-switcher";
-import prismadb from "@/lib/prismadb";
-import { ThemeToggle } from "@/components/theme-toggle";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis } from "recharts";
 
-const Navbar = async () => {
-  const { userId } = auth();
+interface OverviewProps {
+  data: any[];
+}
 
-  if (!userId) {
-    redirect("/sign-in");
-  }
-
-  const stores = await prismadb.store.findMany({
-    where: {
-      userId,
-    },
-  });
-
+export const Overview: React.FC<OverviewProps> = ({ data }) => {
   return (
-    <div className="border-b">
-      <div className="flex h-16 items-center px-4">
-        <StoreSwitcher items={stores} />
-        <MainNav className="mx-6" />
-        <div className="ml-auto flex items-center space-x-4">
-          <ThemeToggle />
-          {/* <UserButton afterSignOutUrl="/" /> */}
-        </div>
-      </div>
-    </div>
+    <ResponsiveContainer width="100%" height={350}>
+      <BarChart data={data}>
+        <XAxis
+          dataKey="name"
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+        />
+        <YAxis
+          stroke="#888888"
+          fontSize={12}
+          tickLine={false}
+          axisLine={false}
+          tickFormatter={(value) => `$${value}`}
+        />
+        <Bar dataKey="total" fill="#adfa1d" radius={[4, 4, 0, 0]} />
+      </BarChart>
+    </ResponsiveContainer>
   );
 };
-
-export default Navbar;
