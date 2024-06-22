@@ -5,7 +5,8 @@ FROM node:20
 WORKDIR /app
 
 # npm comes with Node.js, so no need to install npm separately
-
+# Update npm to the latest version
+RUN npm install -g npm@latest
 # Install Yarn
 RUN npm install --global yarn
 
