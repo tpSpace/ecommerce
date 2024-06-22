@@ -30,6 +30,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd ~
             mkdir ecomemrce-admin
             cd ~/Documents/ecomemrce-admin
             touch .env
@@ -52,6 +53,7 @@ jobs:
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
+            cd ~
             mkdir ecomemrce-admin
             cd ~/Documents/ecomemrce-admin
             git pull
