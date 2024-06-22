@@ -22,18 +22,18 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@master
+        uses: actions/checkout@v3
 
       - name: Create .env file on droplet
-        uses: appleboy/ssh-action@1.7.6
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
             cd ~
-            mkdir ecomemrce-admin
-            cd ~/Documents/ecomemrce-admin
+            mkdir -p ecommerce-admin
+            cd ~/ecommerce-admin
             touch .env
             echo "NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=${{ secrets.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY }}" > .env
             echo "CLERK_SECRET_KEY=${{ secrets.CLERK_SECRET_KEY }}" >> .env
@@ -48,15 +48,13 @@ jobs:
             echo "STRIPE_API_KEY=${{ secrets.STRIPE_API_KEY }}" >> .env
 
       - name: Deploy
-        uses: appleboy/ssh-action@master
+        uses: appleboy/ssh-action@v0.1.4
         with:
           host: ${{ secrets.DROPLET_IP }}
           username: root
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           script: |
-            cd ~
-            mkdir ecomemrce-admin
-            cd ~/Documents/ecomemrce-admin
+            cd ~/ecommerce-admin
             git pull
             docker compose up -d --no-deps --build
             docker compose logs -n 10
